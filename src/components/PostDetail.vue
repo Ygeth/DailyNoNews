@@ -27,7 +27,8 @@
 </template>
 
 <script>
-import strapiService from '../services/strapiService';
+// import strapiService from '../services/strapiService';
+import wordpressService from '../services/wordpressService';
 
 export default {
   props: {
@@ -51,7 +52,7 @@ export default {
       this.loading = true;
       this.error = null;
       try {
-        this.post = await strapiService.getPostById(this.id);
+        this.post = await wordpressService.getPostById(this.id);
       } catch (err) {
         this.error = err.message;
         console.error("Error al obtener los detalles del post:", err);

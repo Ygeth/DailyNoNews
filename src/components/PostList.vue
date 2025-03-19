@@ -26,7 +26,8 @@
 
 <script>
 // Remove axios import:  import axios from 'axios';
-import strapiService from '../services/strapiService'; // Import the service
+import wordpressService from '../services/wordpressService';
+// import strapiService from '../services/strapiService'; // Import the service
 import PostCard from './PostCard.vue';
 
 export default {
@@ -45,7 +46,7 @@ export default {
       this.loading = true;
       this.error = null;
       try {
-        this.posts = await strapiService.getPosts(); // Use the service method
+        this.posts = await wordpressService.getPosts(); // Use the service method
       } catch (err) {
         this.error = err.message; // Error message from service
         console.error("Error al obtener los posts:", err);

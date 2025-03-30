@@ -1,11 +1,19 @@
 <template>
   <div id="app" class="body-style" :style="backgroundStyle">
-    <header class="py-4 headerStyle border-b border-b-blue-400">
+    <header class="py-4 headerStyle ">
       <div class="container flex items-center">
         <img src="./assets/posibles-logos/logo.png" alt="SinapsisHub Logo" class="logo mr-4" />
         <h1 class="title-h1 mb-0">SinapsisHub</h1>
       </div>
     </header>
+    <section class="topics">
+      <div class="container">
+        <span v-for="topic in topics" :key="topic" class="topics-link">
+          <!-- <router-link :to="{ name: 'Topic', params: { topic } }">{{ topic }}</router-link> -->
+          <span>{{ topic }}</span>
+        </span>
+      </div>
+    </section>
     <main>
       <router-view />  
     </main>
@@ -20,6 +28,16 @@
 <script>
 export default {
   name: 'App',
+  data() {
+    return {
+      topics: ['Tecnología', 'Ciencia', 'Salud', 'Educación', 'Sociedad'],
+    };
+  },
+  methods: {
+    navigateToTopic(topic) {
+      this.$router.push({ name: 'Topic', params: { topic } });
+    }
+  },
   computed: {
     backgroundStyle() {
       return {
@@ -35,6 +53,13 @@ export default {
 </script>
 
 <style scoped>
+.topics-link {
+  cursor: pointer;
+  padding-right: 1rem;
+}
+.topics{
+  background-color: #0676c2;
+}
 .headerStyle {
   background-color: #00152b;
 }

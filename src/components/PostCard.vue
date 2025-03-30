@@ -1,79 +1,194 @@
 <template>
-  <article class="post-card cursor-pointer" @click="navigateToPost(post.documentId)">
-    <div v-if="post.img_url" class="post-card-image">
-      <img :src="post.img_url" :alt="post.title" width="200px" height="150px"/>
-    </div>
-    <div class="post-card-content">
-      <div v-if="post.categories && post.categories.length > 0" class="category-tag">
-        {{ post.categories[0] }}
+  <article class="article-card">
+    <router-link :to="{ name: 'PostDetail', params: { id: post.documentId } }" class="card-image">
+      <img v-if="post.img_url" :src="post.img_url" :alt="`Imagen de ${post.title}`" loading="lazy">
+      <div v-else class="placeholder-image" :style="{ backgroundColor: getRandomColor() }">
+        <span>{{ post.categories?.[0] || 'Artículo' }}</span>
       </div>
-      <h3 class="title-h3 text-gray-800"> {{ post.title }} </h3>
-      <!-- <p class="text-gray-600 text-sm line-clamp-5" v-html="post.content"></p> -->
-      <div class="post-meta">
-        <span class="time">hace {{ formatTimeAgo(post.createdAt) }}</span>
+    </router-link>
+
+    <div class="card-content">
+      <div class="card-categories" v-if="post.categories && post.categories.length">
+        <span v-for="category in post.categories.slice(0, 2)" :key="category" class="category-tag">
+          {{ category }}
+        </span>
+      </div>
+
+      <router-link :to="{ name: 'PostDetail', params: { id: post.documentId } }">
+        <h3 class="card-title" v-html="post.title"></h3>
+      </router-link>
+
+      <div class="card-excerpt" v-html="stripHtml(post.excerpt)"></div>
+
+      <div class="article-meta">
+        <span v-if="post.author" class="author-name">Por {{ post.author.name }}</span>
+        <time :datetime="post.createdAt">{{ formatDate(post.createdAt) }}</time>
       </div>
     </div>
   </article>
 </template>
 
-<script>
-export default {
-  props: {
-    post: { type: Object, required: true }
+<script setup>
+import { defineProps } from 'vue';
+import { RouterLink } from 'vue-router';
+
+// --- Props ---
+// Definimos que el componente espera recibir un objeto 'post'
+const props = defineProps({
+  post: {
+    type: Object,
+    required: true,
   },
-  methods: {
-    navigateToPost(postId) {
-      this.$router.push({ name: 'PostDetail', params: { id: postId } });
-    },
-    formatTimeAgo(dateString) {
-      const date = new Date(dateString);
-      const now = new Date();
-      const diffInMinutes = Math.floor((now - date) / 1000 / 60);
+});
 
-      if (diffInMinutes < 1) return 'ahora';
-      if (diffInMinutes < 60) return `${diffInMinutes} minutos`;
+// --- Funciones Auxiliares (Específicas de la Card) ---
+const formatDate = (dateString) => {
+  if (!dateString) return '';
+  const options = { year: 'numeric', month: 'long', day: 'numeric' };
+  // Usando localización española por defecto
+  return new Date(dateString).toLocaleDateString('es-ES', options);
+};
 
-      const diffInHours = Math.floor(diffInMinutes / 60);
-      if (diffInHours < 24) return `${diffInHours} horas`;
+const stripHtml = (html) => {
+  if (!html) return '';
+  // Una forma sencilla y segura de quitar HTML básico para el excerpt
+  let doc = new DOMParser().parseFromString(html, 'text/html');
+  let text = doc.body.textContent || "";
+  // Reemplazar múltiples espacios/saltos de línea con uno solo para limpieza
+  return text.replace(/\s+/g, ' ').trim();
+}
 
-      const diffInDays = Math.floor(diffInHours / 24);
-      if (diffInDays < 30) return `${diffInDays} días`;
-
-      const diffInMonths = Math.floor(diffInDays / 30);
-      if (diffInMonths < 12) return `${diffInMonths} meses`;
-
-      return date.toLocaleDateString('es-ES', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-      });
-    }
+// Función para color placeholder aleatorio (si se usa)
+const getRandomColor = () => {
+  const letters = '789ABCD'; // Tonos un poco más oscuros/menos brillantes que antes
+  let color = '#';
+  for (let i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * letters.length)];
   }
+  return color;
 }
 </script>
+<style scoped>
+/* --- Estilos específicos de la Card --- */
 
-<style>
-.title-h3 {
-  font-size: 1.2rem;
-  font-weight: 500;
-  margin: 0.5rem 0;
-  color: green;
+/* Heredados de style.css pero importantes para el scope local */
+.article-card {
+  /* Asegúrate que los estilos base de .article-card estén en style.css */
+  /* Puedes añadir overrides o estilos adicionales aquí si es necesario */
 }
 
-.post-card {
-  background-color: #ffffff;
-  border-radius: 0.5rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-  transition: transform 0.3s ease;
+.card-image {
+  display: block;
+  text-decoration: none;
+  position: relative; /* Para posicionar el texto del placeholder */
+}
+
+.card-image img {
+    display: block;
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    background-color: #333; /* Color de fondo mientras carga la img */
+}
+
+
+.placeholder-image {
+  width: 100%;
+  height: 200px;
   display: flex;
-  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.8); /* Texto blanco semitransparente sobre fondo de color */
+  font-size: 1.1rem;
+  font-weight: bold;
+  padding: 10px;
 }
 
-.post-card:hover {
-  transform: translateY(-5px);
+.card-content {
+  /* Estilos base en style.css */
+   padding: 20px;
+   flex-grow: 1;
+   display: flex;
+   flex-direction: column;
 }
-.post-card-content {
-  padding: 1rem;
+
+/* Estilo para enlace que envuelve título */
+.card-content > a {
+  color: inherit; /* Hereda color primario de texto */
+  text-decoration: none;
+  display: block; /* Asegura que ocupa el espacio */
+  margin: 0.5em 0; /* Mismo margen que tenía el h3 */
+}
+.card-content > a:hover .card-title {
+  color: var(--color-accent);
+  text-decoration: underline;
+}
+
+.card-title {
+   /* Estilos base en style.css */
+   margin: 0; /* Quitamos margen porque el enlace contenedor ya lo tiene */
+   font-size: 1.3rem;
+   color: var(--color-text-primary);
+   line-height: 1.4;
+}
+
+.card-categories {
+  margin-bottom: 0.5em;
+  /* Los estilos de .category-tag vienen de style.css */
+}
+
+.card-excerpt {
+  /* Estilos base en style.css */
+  font-size: 1rem;
+  color: var(--color-text-secondary);
+  flex-grow: 1;
+  margin-bottom: 1rem;
+  /* Clamp viene de style.css globalmente o aplicar aquí si se prefiere */
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.article-meta {
+  /* Estilos base en style.css */
+  margin-top: auto; /* Empuja al final */
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+}
+.article-meta span {
+    margin-right: 1em;
+}
+
+/* Estilos específicos SOLO para PostList.vue si son necesarios */
+.card-image {
+  display: block; /* Asegura que el enlace ocupe el espacio de la imagen */
+  text-decoration: none; /* Quitar subrayado del enlace de imagen */
+}
+
+.placeholder-image {
+  width: 100%;
+  height: 200px; /* Misma altura que la imagen real */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(0, 0, 0, 0.5); /* Texto oscuro sobre placeholder claro */
+  font-size: 0.9rem;
+}
+
+/* Ajustar para que el enlace del título herede el color primario */
+.card-content a {
+  color: inherit; /* Hereda el color blanco del texto primario */
+  text-decoration: none;
+}
+.card-content a:hover .card-title {
+  color: var(--color-accent); /* Cambia el color del título al pasar el ratón */
+  text-decoration: underline;
+}
+
+
+.card-categories {
+    margin-bottom: 0.5em; /* Espacio debajo de las categorías */
 }
 </style>

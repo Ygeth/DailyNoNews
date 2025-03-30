@@ -1,107 +1,281 @@
+/* Importa Tailwind si todavía lo necesitas para layout u otras utilidades no relacionadas con el tema */
 @import "tailwindcss";
 
+/* ----------------------------------------- */
+/* ----- Guía de Estilo CSS (Dark Theme) ----- */
+/* ----------------------------------------- */
+
+/* ----- Variables de Color ----- */
+:root {
+  --color-background-dark: #0a0a0a; /* Fondo principal muy oscuro / negro */
+  --color-background-card: #181818; /* Fondo ligeramente más claro para cards */
+  --color-text-primary: #ffffff;    /* Texto principal blanco */
+  --color-text-secondary: #b0b0b0; /* Texto secundario/metadatos (gris claro) */
+  --color-accent: #00bcd4;         /* Color de acento (cyan/turquesa para categorías, enlaces) */
+  --color-error: #ff6b6b;          /* Un color para errores que contraste */
+  --font-primary: 'Helvetica Neue', 'Arial', sans-serif; /* Fuente principal (ajustar según prefieras) */
+}
+
+/* ----- Estilos Generales / Body ----- */
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--color-background-dark);
+  color: var(--color-text-primary);
+  font-family: var(--font-primary);
+  line-height: 1.6;
+  font-size: 16px; /* Tamaño base */
+}
+
+/* ----- Contenedor General (Mantenido de tu original) ----- */
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 1rem 1rem; /* Ajustado padding vertical */
 }
 
-.title-h1 {
+/* ----- Tipografía ----- */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--color-text-primary);
+  font-weight: bold;
+  margin-top: 1.5em; /* Añadido margen superior */
+  margin-bottom: 0.8em;
+  line-height: 1.3;
+}
+
+h1 { font-size: 2.5rem; }
+h2 { font-size: 1.8rem; } /* Útil para títulos de sección */
+h3 { font-size: 1.4rem; } /* Útil para títulos de post en cards */
+h4 { font-size: 1.1rem; }
+
+p {
+  margin-bottom: 1em;
+  color: var(--color-text-secondary); /* Párrafos con color secundario */
+}
+
+a {
+  color: var(--color-accent); /* Enlaces con color de acento */
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+a:hover {
+  color: var(--color-text-primary);
+  text-decoration: underline;
+}
+
+/* ----- Componentes Específicos ----- */
+
+/* Título Principal de la Página (Reemplaza tu .title-h1) */
+.page-title {
   font-size: 2.5rem;
   font-weight: bold;
-  margin-bottom: 1rem;
-  color: green;
+  margin-bottom: 1.5rem;
+  margin-top: 1rem; /* Ajustar margen superior si es necesario */
+  color: var(--color-text-primary);
+  text-align: center; /* Opcional: centrar */
 }
 
-.loading, .error-message {
+/* Mensajes de Carga y Error */
+.loading-message, .error-message {
   text-align: center;
   font-size: 1.25rem;
-  color: #ff0000;
+  padding: 2rem;
+  color: var(--color-text-secondary);
+}
+.error-message {
+  color: var(--color-error);
+  font-weight: bold;
 }
 
+/* Etiqueta de Categoría (Reemplaza tu .category-tag) */
 .category-tag {
   display: inline-block;
-  background-color: #007bff;
-  color: #ffffff;
-  padding: 0.25rem 0.5rem;
-  border-radius: 0.25rem;
-  font-size: 0.875rem;
-  margin-bottom: 0.5rem;
+  color: var(--color-accent);
+  background-color: transparent; /* Sin fondo */
+  padding: 0; /* Sin padding extra */
+  border-radius: 0; /* Sin borde redondeado */
+  font-size: 0.8rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 0.5em;
+  margin-right: 0.8em; /* Espacio si hay varias categorías */
 }
 
-.text-gray-600 {
-  color: #718096;
+/* Metadatos (Autor, Fecha) (Reemplaza tu .post-meta) */
+.article-meta {
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+  margin-top: 0.5rem; /* Espacio sobre los metadatos */
+}
+.article-meta span { /* Para separar autor y fecha */
+    margin-right: 1em;
+}
+.article-meta time { /* Puedes quitarle el estilo itálico si prefieres */
+  /* font-style: normal; */
 }
 
-.text-sm {
-  font-size: 0.875rem;
+
+/* Grid para la lista de posts (Como en Singularity Hub) */
+.posts-grid {
+  display: grid;
+  /* grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); */ /* Opción responsive simple */
+  grid-template-columns: 1fr 1fr 1fr; /* Tres columnas por defecto */
+  gap: 30px;
+  padding: 30px 0;
 }
 
+/* Card de Artículo */
+.article-card {
+  background-color: var(--color-background-card);
+  border-radius: 5px; /* Bordes redondeados suaves */
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.article-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 188, 212, 0.1); /* Sombra sutil color acento */
+}
+
+
+.article-card .card-image img {
+  display: block;
+  width: 100%;
+  height: 200px; /* Altura fija para la imagen */
+  object-fit: cover; /* Asegura que la imagen cubra el área sin distorsionarse */
+}
+
+.article-card .card-content {
+  padding: 20px;
+  flex-grow: 1; /* Hace que el contenido ocupe el espacio restante */
+  display: flex;
+  flex-direction: column;
+}
+
+.article-card .card-title { /* Título dentro de la card */
+  font-size: 1.3rem;
+  margin: 0.5em 0; /* Ajustar márgenes */
+  color: var(--color-text-primary);
+  line-height: 1.4;
+  /* Quitar clamp si se usa en card */
+}
+
+.article-card .card-excerpt {
+  font-size: 1rem;
+  color: var(--color-text-secondary);
+  flex-grow: 1; /* Empuja los metadatos hacia abajo */
+  margin-bottom: 1rem; /* Espacio antes de los metadatos */
+  /* Aplicar clamp aquí si quieres limitar el texto del excerpt */
+  display: -webkit-box;
+  -webkit-line-clamp: 3; /* Limita a 3 líneas */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.article-card .article-meta {
+    margin-top: auto; /* Empuja los metadatos al final de la card */
+}
+
+
+/* ----- Utilidades Mantenidas/Adaptadas ----- */
+
+/* Clamp (Mantenido de tu original, útil para excerpt si no está en card-excerpt) */
 .line-clamp-2 {
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
-
-.post-meta {
-  font-size: 0.875rem;
-  color: #a0aec0;
-  margin-top: 0.5rem;
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
-.time {
+/* ----- Media Queries (Adaptado) ----- */
+@media (max-width: 992px) {
+  .posts-grid {
+    grid-template-columns: 1fr 1fr; /* Dos columnas en pantallas medianas */
+  }
+}
+
+@media (max-width: 600px) {
+  .posts-grid {
+    grid-template-columns: 1fr; /* Una columna en pantallas pequeñas */
+    gap: 20px;
+  }
+  .page-title {
+      font-size: 2rem;
+  }
+  .article-card .card-title {
+      font-size: 1.2rem;
+  }
+   .article-card .card-image img {
+      height: 180px; /* Menor altura en móvil */
+  }
+}
+
+/* --- Estilos específicos de PostDetail (Mantenidos de tu original, adaptados a dark theme) --- */
+/* Asegúrate que esto no esté dentro de otra clase como .post-detail en tu CSS original */
+.post-detail-content article {
+  max-width: 800px;
+  margin: 2rem auto; /* Añadido margen vertical */
+  padding: 1rem; /* Reducido padding comparado con el original */
+  font-family: var(--font-primary); /* Usar la fuente base definida */
+  line-height: 1.7; /* Ligeramente más espaciado para lectura */
+  color: var(--color-text-secondary); /* Texto principal del artículo un poco más suave */
+}
+
+.post-detail-content article h1, /* Título principal del post */
+.post-detail-content article h2,
+.post-detail-content article h3 {
+  font-weight: 700;
+  margin: 2rem 0 1rem;
+  color: var(--color-text-primary); /* Títulos en blanco brillante */
+  line-height: 1.3;
+}
+.post-detail-content article h1 { font-size: 2.2rem;}
+.post-detail-content article h2 { font-size: 1.8rem;}
+.post-detail-content article h3 { font-size: 1.5rem;}
+
+
+.post-detail-content article p {
+  font-size: 1.1rem;
+  margin-bottom: 1.5rem;
+  color: var(--color-text-secondary); /* Párrafos con color secundario */
+}
+.post-detail-content article img {
+    max-width: 100%;
+    height: auto;
+    margin: 1.5rem 0;
+    border-radius: 4px; /* Opcional: redondear imágenes */
+}
+
+.post-detail-content article em {
   font-style: italic;
+  color: var(--color-accent); /* Énfasis con color de acento */
+  font-weight: 500;
 }
 
-.post-detail{
-  /* Estilos para el artículo */
-  article {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 2rem;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    line-height: 1.6;
-    color: #333;
+.post-detail-content article strong {
+  font-weight: 600;
+  color: var(--color-text-primary); /* Negritas más brillantes */
+}
+
+/* Estilos responsivos para el detalle */
+@media (max-width: 768px) {
+  .post-detail-content article {
+    padding: 1rem; /* Sin cambios necesarios si ya estaba en 1rem */
   }
+   .post-detail-content article h1 { font-size: 1.8rem;}
+  .post-detail-content article h2 { font-size: 1.5rem;}
+  .post-detail-content article h3 { font-size: 1.3rem;}
 
-  article h2 {
-    font-size: 1.8rem;
-    font-weight: 700;
-    margin: 2rem 0 1rem;
-    color: #1a1a1a;
-    line-height: 1.3;
-  }
-
-  article p {
-    font-size: 1.1rem;
-    margin-bottom: 1.5rem;
-    color: #4a4a4a;
-  }
-
-  article em {
-    font-style: italic;
-    color: #2c5282;
-    font-weight: 500;
-  }
-
-  article strong {
-    font-weight: 600;
-    color: #2d3748;
-  }
-
-  /* Estilos responsivos */
-  @media (max-width: 768px) {
-    article {
-      padding: 1rem;
-    }
-
-    article h2 {
-      font-size: 1.5rem;
-    }
-
-    article p {
-      font-size: 1rem;
-    }
+  .post-detail-content article p {
+    font-size: 1rem;
   }
 }

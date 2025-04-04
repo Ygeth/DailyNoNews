@@ -22,7 +22,35 @@ const strapiService = {
     } catch (error) {
       throw new Error('Error al obtener el post: ' + error.message);
     }
-  }
+  },
+
+  async getCategories() { 
+    try {
+      const response = await axios.get(`${WORDPRESS_API_URL}/categories`);
+      return response.data;
+    } catch (error) {
+      throw new Error('Error al obtener las categorías: ' + error.message);
+    }
+  },
+
+  async getPostsByCategory(category) {
+    try {
+      const response = await axios.get(`${WORDPRESS_API_URL}/posts?category=${category}`);
+      let posts = postTransformer.fromWorpressList(response.data.posts)
+      return posts;
+    } catch (error) {
+      throw new Error('Error al obtener los posts por categoría: ' + error.message);
+    }
+  },
+
+  async createCategory(category) { // requires authentication
+    try {
+      const response = await axios.post(`${WORDPRESS_API_URL}/categories/new`, category);
+      return response.data;
+    } catch (error) {
+      throw new Error('Error al crear la categoría: ' + error.message);
+    }
+  },
 };
 
 export default strapiService;

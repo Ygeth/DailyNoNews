@@ -1,16 +1,16 @@
 <template>
   <div id="app" class="body-style" :style="backgroundStyle">
     <header class="py-4 headerStyle ">
-      <div class="container flex items-center">
+      <div @click="navigateToHome()" class="cursor-pointer container flex items-center">
         <img src="./assets/posibles-logos/logo.png" alt="SinapsisHub Logo" class="logo mr-4" />
         <h1 class="title-h1 mb-0">SinapsisHub</h1>
       </div>
     </header>
-    <section class="topics">
+    <section class="categories">
       <div class="container">
-        <span v-for="topic in topics" :key="topic" class="topics-link">
-          <!-- <router-link :to="{ name: 'Topic', params: { topic } }">{{ topic }}</router-link> -->
-          <span>{{ topic }}</span>
+        <span v-for="category in categoryList" :key="category" class="categories-link">
+          <!-- <router-link :to="{ name: 'category', params: { category } }">{{ category.name }}</router-link> -->
+          <span @click="navigateToCategory(category.name)">{{ category.name }}</span>
         </span>
       </div>
     </section>
@@ -24,40 +24,54 @@
     </footer>
   </div>
 </template>
+<script setup>
+import { computed, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import { useWordpressStore } from '@/stores/wordpressStore';
 
-<script>
-export default {
-  name: 'App',
-  data() {
-    return {
-      topics: ['Tecnología', 'Ciencia', 'Salud', 'Educación', 'Sociedad'],
-    };
-  },
-  methods: {
-    navigateToTopic(topic) {
-      this.$router.push({ name: 'Topic', params: { topic } });
-    }
-  },
-  computed: {
-    backgroundStyle() {
-      return {
-        background: 'linear-gradient(to bottom, #022f5f, #000000)',
-        // backgroundImage: 'url(@/assets/background-pattern.png)',
-        // backgroundImage: 'url(@/assets/background-pattern.png)',
-        backgroundSize: 'cover',
-        backgroundRepeat: 'no-repeat',
-      };
-    }
-  }
+const router = useRouter();
+const wordpressStore = useWordpressStore();
+const categoryList = computed(() => wordpressStore.getCategoryList);
+const loading = computed(() => wordpressStore.getLoading);
+const error = computed(() => wordpressStore.getError);
+
+const navigateToCategory = (category) => {
+  router.push({ name: 'Category', params: { category } }); // If you have a route named 'category'
 };
+const navigateToHome = () => {
+  router.push({ name: 'Home' }); // If you have a route named 'home'
+};
+
+
+const backgroundStyle = computed(() => ({
+  background: 'linear-gradient(to bottom, #022f5f, #000000)',
+  backgroundSize: 'cover',
+  backgroundRepeat: 'no-repeat',
+}));
+
+
+onMounted(async () => {
+  try {
+    // Llama a tu servicio para obtener los posts
+    wordpressStore.fetchCategories(); 
+
+    // const fetchedPosts = await wordpressService.getPosts();
+    // posts.value = fetchedPosts;
+  } catch (err) {
+    console.error("Error fetching categorias:", err);
+    error.value = 'No se pudieron cargar las noticias. Inténtalo de nuevo más tarde.';
+  } finally {
+    loading.value = false;
+  }
+});
 </script>
 
 <style scoped>
-.topics-link {
+.categories-link {
   cursor: pointer;
   padding-right: 1rem;
 }
-.topics{
+.categories{
   background-color: #0676c2;
 }
 .headerStyle {

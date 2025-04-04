@@ -28,7 +28,7 @@
 
 <script>
 // import strapiService from '../services/strapiService';
-import wordpressService from '../services/wordpressService';
+import wordpressService from '@/services/wordpressService';
 
 export default {
   props: {
@@ -89,4 +89,9 @@ export default {
 
 <style scoped>
 /* Add component-specific styles here if needed */
+.post-detail {
+  max-width: 52rem;
+  margin: auto;
+  padding: 1rem;
+}
 </style>

@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="body-style" :style="backgroundStyle">
     <header class="py-4 headerStyle ">
-      <div @click="navigateToHome()" class="cursor-pointer container flex items-center">
+      <div @click="navigateTo('Home')" class="cursor-pointer container flex items-center">
         <img src="./assets/posibles-logos/logo.png" alt="SinapsisHub Logo" class="logo mr-4" />
         <h1 class="title-h1 mb-0">SinapsisHub</h1>
       </div>
@@ -12,6 +12,8 @@
           <!-- <router-link :to="{ name: 'category', params: { category } }">{{ category.name }}</router-link> -->
           <span @click="navigateToCategory(category.name)">{{ category.name }}</span>
         </span>
+        <span  class="categories-link" @click="navigateTo('AdminPanel')">AdminPanel</span>
+        <span  class="categories-link" @click="navigateTo('StockAnalysis')">Stock Analysis</span>
       </div>
     </section>
     <main>
@@ -36,10 +38,10 @@ const loading = computed(() => wordpressStore.getLoading);
 const error = computed(() => wordpressStore.getError);
 
 const navigateToCategory = (category) => {
-  router.push({ name: 'Category', params: { category } }); // If you have a route named 'category'
+  router.push({ name: 'Category', params: { category } });
 };
-const navigateToHome = () => {
-  router.push({ name: 'Home' }); // If you have a route named 'home'
+const navigateTo = (name) => {
+  router.push({ name }); 
 };
 
 

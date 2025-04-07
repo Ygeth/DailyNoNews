@@ -51,6 +51,10 @@ const strapiService = {
       throw new Error('Error al crear la categoría: ' + error.message);
     }
   },
+
+  async getStockAnalysisBySymbol(symbol) {
+    getPostsByCategory("stockanalysis")
+  },
 };
 
 export default strapiService;

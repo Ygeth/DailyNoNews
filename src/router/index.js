@@ -1,9 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import PostList from '@/components/posts/PostList.vue';
-import PostDetail from '@/components/posts/PostDetail.vue'; // We'll create this next
-import AdminPanel from '@/components/adminPanel/AdminPanel.vue'; // We'll create this next
+import PostDetail from '@/components/posts/PostDetail.vue'; 
+import AdminPanel from '@/components/adminPanel/AdminPanel.vue'; 
 import Home from '@/components/Home.vue';
-
+import StockAnalysis from '@/components/stockAnalysis/StockAnalysis.vue'; 
 const routes = [
   {
     path: '/',
@@ -30,6 +30,11 @@ const routes = [
     path: '/admin-panel',
     name: 'AdminPanel',
     component: AdminPanel,
+  },
+  {
+    path: '/StockAnalysis',
+    name: 'StockAnalysis',
+    component: StockAnalysis,
   },
 ];
 
